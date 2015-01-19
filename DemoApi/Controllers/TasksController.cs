@@ -27,7 +27,7 @@
 
         [Route("")]
         [HttpPost]
-        public int AddTask(string text)
+        public int AddTask([FromBody]string text)
         {
             int newId = Tasks.Any() 
                 ? Tasks.Select(x => x.Id).Max() + 1 
