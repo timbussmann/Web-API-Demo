@@ -5,20 +5,28 @@
     using System.Web.Http;
     using DemoApi.Models;
 
+    [RoutePrefix("api/tasks")]
     public class TasksController : ApiController
     {
         private static readonly List<TodoTask> Tasks = new List<TodoTask>();
 
+        [Route("")]
+        [HttpGet]
         public IEnumerable<TodoTask> GetAll()
         {
             return Tasks;
         }
 
-        public TodoTask GetTask(int id)
+        // note the int constraint:
+        [Route("{taskId:int}")]
+        [HttpGet]
+        public TodoTask GetTask(int taskId)
         {
-            return Tasks.SingleOrDefault(task => task.Id == id);
+            return Tasks.SingleOrDefault(task => task.Id == taskId);
         }
 
+        [Route("")]
+        [HttpPost]
         public int AddTask(string text)
         {
             int newId = Tasks.Any() 
@@ -34,9 +42,11 @@
             return newId;
         }
 
-        public void DeleteTask(int id)
+        [Route("{taskId:int}")]
+        [HttpDelete]
+        public void RemoveTask(int taskId)
         {
-            TodoTask task = Tasks.Find(x => x.Id == id);
+            TodoTask task = Tasks.Find(x => x.Id == taskId);
             Tasks.Remove(task);
         }
     }
