@@ -52,10 +52,12 @@
 
         [Route("{taskId:int}")]
         [HttpDelete]
-        public void RemoveTask(int taskId)
+        public IHttpActionResult RemoveTask(int taskId)
         {
             TodoTask task = Tasks.Find(x => x.Id == taskId);
             Tasks.Remove(task);
+
+            return this.StatusCode(HttpStatusCode.NoContent);
         }
     }
 }
