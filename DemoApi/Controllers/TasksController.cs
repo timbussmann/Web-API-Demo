@@ -34,19 +34,20 @@
 
         [Route("")]
         [HttpPost]
-        public int AddTask([FromBody]string text)
+        public TodoTask AddTask([FromBody]string text)
         {
             int newId = Tasks.Any() 
                 ? Tasks.Select(x => x.Id).Max() + 1 
                 : 1;
 
-            Tasks.Add(new TodoTask
+            var newTask = new TodoTask
             {
                 Id = newId,
                 Text = text
-            });
+            };
+            Tasks.Add(newTask);
 
-            return newId;
+            return newTask;
         }
 
         [Route("{taskId:int}")]
