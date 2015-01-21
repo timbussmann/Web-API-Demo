@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Web.Http;
     using DemoApi.Models;
 
@@ -22,7 +23,13 @@
         [HttpGet]
         public TodoTask GetTask(int taskId)
         {
-            return Tasks.SingleOrDefault(task => task.Id == taskId);
+            TodoTask task = Tasks.SingleOrDefault(t => t.Id == taskId);
+            if (task == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            return task;
         }
 
         [Route("")]
