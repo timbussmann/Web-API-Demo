@@ -9,7 +9,7 @@
     [RoutePrefix("api/tasks")]
     public class TasksController : ApiController
     {
-        private static readonly List<TodoTask> Tasks = new List<TodoTask>();
+        internal static readonly List<TodoTask> Tasks = new List<TodoTask>();
 
         [Route("")]
         [HttpGet]
@@ -56,8 +56,13 @@
         public IHttpActionResult RemoveTask(int taskId)
         {
             TodoTask task = Tasks.Find(x => x.Id == taskId);
-            Tasks.Remove(task);
 
+            if (task == null)
+            {
+                return this.NotFound();
+            }
+
+            Tasks.Remove(task);
             return this.StatusCode(HttpStatusCode.NoContent);
         }
     }
