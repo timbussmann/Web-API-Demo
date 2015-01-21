@@ -19,7 +19,7 @@
         }
 
         // note the int constraint:
-        [Route("{taskId:int}")]
+        [Route("{taskId:int}", Name = "GetTaskById")]
         [HttpGet]
         public TodoTask GetTask(int taskId)
         {
@@ -34,7 +34,7 @@
 
         [Route("")]
         [HttpPost]
-        public TodoTask AddTask([FromBody]string text)
+        public IHttpActionResult AddTask([FromBody]string text)
         {
             int newId = Tasks.Any() 
                 ? Tasks.Select(x => x.Id).Max() + 1 
@@ -47,7 +47,8 @@
             };
             Tasks.Add(newTask);
 
-            return newTask;
+            string resourceLocation = this.Url.Link("GetTaskById", new { taskId = newId });
+            return this.Created(resourceLocation, newTask);
         }
 
         [Route("{taskId:int}")]
