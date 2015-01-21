@@ -14,18 +14,18 @@
     public class TasksControllerTest
     {
         private readonly UrlHelper urlHelper;
+        private readonly TaskList tasks; 
 
         private readonly TasksController testee;
 
         public TasksControllerTest()
         {
-            this.testee = new TasksController();
+            this.tasks = new TaskList();
 
-            // for simplicity we access our tasks directly from test code. Of course
-            // a real controller wouldn't manage it's data by itself.
-            TasksController.Tasks.Clear();
-
-            this.testee.Url = this.urlHelper = A.Fake<UrlHelper>();
+            this.testee = new TasksController(this.tasks)
+            {
+                Url = this.urlHelper = A.Fake<UrlHelper>()
+            };
         }
 
         [Fact]
@@ -39,12 +39,12 @@
         [Fact]
         public void GetAll_WhenTasksInList_ShouldReturnAllTasksInList()
         {
-            var tasks = new[] { new TodoTask(), new TodoTask(), new TodoTask(), };
-            TasksController.Tasks.AddRange(tasks);
+            var expectedTasks = new[] { new TodoTask(), new TodoTask(), new TodoTask(), };
+            this.tasks.AddRange(expectedTasks);
 
             IEnumerable<TodoTask> result = this.testee.GetAll();
 
-            result.Should().Equal(tasks);
+            result.Should().Equal(expectedTasks);
         }
 
         [Fact]
@@ -59,7 +59,7 @@
         public void GetTask_WhenTaskFound_ShouldReturnTask()
         {
             TodoTask expectedTask = new TodoTask { Id = 42, Text = "a task to do" };
-            TasksController.Tasks.Add(expectedTask);
+            this.tasks.Add(expectedTask);
 
             TodoTask result = this.testee.GetTask(expectedTask.Id);
 
@@ -70,7 +70,7 @@
         public void RemoveTask_WhenTaskExists_ShouldReturnNoContentResponse()
         {
             var task = new TodoTask();
-            TasksController.Tasks.Add(task);
+            this.tasks.Add(task);
 
             IHttpActionResult result = this.testee.RemoveTask(task.Id);
 
@@ -82,11 +82,11 @@
         public void RemoveTask_WhenTaskExists_ShouldRemoveTaskFromTasks()
         {
             var task = new TodoTask();
-            TasksController.Tasks.Add(task);
+            this.tasks.Add(task);
 
             IHttpActionResult result = this.testee.RemoveTask(task.Id);
 
-            TasksController.Tasks.Should().NotContain(task);
+            this.tasks.Should().NotContain(task);
         }
 
         [Fact]
@@ -120,7 +120,7 @@
 
             IHttpActionResult result = this.testee.AddTask(TaskText);
 
-            TasksController.Tasks.Should().ContainSingle(x => x.Text == TaskText);
+            this.tasks.Should().ContainSingle(x => x.Text == TaskText);
         }
     }
 }

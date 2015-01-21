@@ -9,13 +9,18 @@
     [RoutePrefix("api/tasks")]
     public class TasksController : ApiController
     {
-        internal static readonly List<TodoTask> Tasks = new List<TodoTask>();
+        private readonly ITaskList tasks;
+
+        public TasksController(ITaskList tasks)
+        {
+            this.tasks = tasks;
+        }
 
         [Route("")]
         [HttpGet]
         public IEnumerable<TodoTask> GetAll()
         {
-            return Tasks;
+            return this.tasks;
         }
 
         // note the int constraint:
@@ -23,7 +28,7 @@
         [HttpGet]
         public TodoTask GetTask(int taskId)
         {
-            TodoTask task = Tasks.SingleOrDefault(t => t.Id == taskId);
+            TodoTask task = this.tasks.SingleOrDefault(t => t.Id == taskId);
             if (task == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
@@ -36,8 +41,8 @@
         [HttpPost]
         public IHttpActionResult AddTask([FromBody]string text)
         {
-            int newId = Tasks.Any() 
-                ? Tasks.Select(x => x.Id).Max() + 1 
+            int newId = this.tasks.Any() 
+                ? this.tasks.Select(x => x.Id).Max() + 1 
                 : 1;
 
             var newTask = new TodoTask
@@ -45,7 +50,7 @@
                 Id = newId,
                 Text = text
             };
-            Tasks.Add(newTask);
+            this.tasks.Add(newTask);
 
             string resourceLocation = this.Url.Link("GetTaskById", new { taskId = newId });
             return this.Created(resourceLocation, newTask);
@@ -55,14 +60,14 @@
         [HttpDelete]
         public IHttpActionResult RemoveTask(int taskId)
         {
-            TodoTask task = Tasks.Find(x => x.Id == taskId);
+            TodoTask task = this.tasks.SingleOrDefault(x => x.Id == taskId);
 
             if (task == null)
             {
                 return this.NotFound();
             }
 
-            Tasks.Remove(task);
+            this.tasks.Remove(task);
             return this.StatusCode(HttpStatusCode.NoContent);
         }
     }
