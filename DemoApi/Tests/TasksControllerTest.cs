@@ -100,6 +100,8 @@
         [Fact]
         public void AddTask_ShouldReturnCreatedResponse()
         {
+            // it is also possible to fully test the routing mechanism and the real UrlHelper, but 
+            // this requires much more test setup (like setting up the request) for questionable benefits. See ASP.NET Web API 2 Recipes Chapter 11.
             const string TaskText = "a new task";
             const string LinkUrl = "http://some.whe.ru/there";
             A.CallTo(() => this.urlHelper.Link("GetTaskById", A<object>._)).Returns(LinkUrl);
