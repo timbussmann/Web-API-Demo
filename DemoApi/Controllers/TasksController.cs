@@ -41,6 +41,11 @@
         [HttpPost]
         public IHttpActionResult AddTask([FromBody]string text)
         {
+            if (text == null)
+            {
+                return this.BadRequest("no task text provided");
+            }   
+
             int newId = this.tasks.Any() 
                 ? this.tasks.Select(x => x.Id).Max() + 1 
                 : 1;

@@ -122,5 +122,13 @@
 
             this.tasks.Should().ContainSingle(x => x.Text == TaskText);
         }
+
+        [Fact]
+        public void AddTask_WhenTextIsNull_MustReturnBadRequestResult()
+        {
+            IHttpActionResult result = this.testee.AddTask(null);
+
+            result.Should().BeOfType<BadRequestErrorMessageResult>();
+        }
     }
 }
