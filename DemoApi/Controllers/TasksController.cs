@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Net;
     using System.Web.Http;
+    using DemoApi.Filters;
     using DemoApi.Models;
 
     [RoutePrefix("api/tasks")]
@@ -39,13 +40,9 @@
 
         [Route("")]
         [HttpPost]
+        [NotNull]
         public IHttpActionResult AddTask([FromBody]string text)
         {
-            if (text == null)
-            {
-                return this.BadRequest("no task text provided");
-            }   
-
             int newId = this.tasks.Any() 
                 ? this.tasks.Select(x => x.Id).Max() + 1 
                 : 1;
