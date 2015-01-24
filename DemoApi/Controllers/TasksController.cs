@@ -41,17 +41,14 @@
         [Route("")]
         [HttpPost]
         [NotNull]
-        public IHttpActionResult AddTask([FromBody]string text)
+        public IHttpActionResult AddTask(TodoTask newTask)
         {
             int newId = this.tasks.Any() 
                 ? this.tasks.Select(x => x.Id).Max() + 1 
                 : 1;
 
-            var newTask = new TodoTask
-            {
-                Id = newId,
-                Text = text
-            };
+            newTask.Id = newId;
+
             this.tasks.Add(newTask);
 
             string resourceLocation = this.Url.Link("GetTaskById", new { taskId = newId });

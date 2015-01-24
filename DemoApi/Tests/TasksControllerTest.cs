@@ -102,25 +102,25 @@
         {
             // it is also possible to fully test the routing mechanism and the real UrlHelper, but 
             // this requires much more test setup (like setting up the request) for questionable benefits. See ASP.NET Web API 2 Recipes Chapter 11.
-            const string TaskText = "a new task";
+            var expectedTask = new TodoTask();
             const string LinkUrl = "http://some.whe.ru/there";
             A.CallTo(() => this.urlHelper.Link("GetTaskById", A<object>._)).Returns(LinkUrl);
 
-            IHttpActionResult result = this.testee.AddTask(TaskText);
+            IHttpActionResult result = this.testee.AddTask(expectedTask);
 
             var response = result.Should().BeOfType<CreatedNegotiatedContentResult<TodoTask>>().Which;
-            response.Content.Text.Should().Be(TaskText);
+            response.Content.Should().Be(expectedTask);
             response.Location.Should().Be(LinkUrl);
         }
 
         [Fact]
         public void AddTask_ShouldAddTaskToTasks()
         {
-            const string TaskText = "a new task";
+            var todoTask = new TodoTask();
 
-            IHttpActionResult result = this.testee.AddTask(TaskText);
+            IHttpActionResult result = this.testee.AddTask(todoTask);
 
-            this.tasks.Should().ContainSingle(x => x.Text == TaskText);
+            this.tasks.Should().ContainSingle(x => x == todoTask);
         }
     }
 }
