@@ -38,6 +38,7 @@
             return task;
         }
 
+        [Authorize]
         [Route("")]
         [HttpPost]
         [NotNull]
@@ -56,6 +57,7 @@
             return this.Created(resourceLocation, newTask);
         }
 
+        [Authorize]
         [Route("{taskId:int}")]
         [HttpDelete]
         public IHttpActionResult RemoveTask(int taskId)
