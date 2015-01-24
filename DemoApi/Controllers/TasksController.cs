@@ -43,6 +43,11 @@
         [NotNull]
         public IHttpActionResult AddTask(TodoTask newTask)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
             int newId = this.tasks.Any() 
                 ? this.tasks.Select(x => x.Id).Max() + 1 
                 : 1;

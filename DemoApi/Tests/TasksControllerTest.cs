@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Net;
     using System.Web.Http;
+    using System.Web.Http.ModelBinding;
     using System.Web.Http.Results;
     using System.Web.Http.Routing;
     using DemoApi.Controllers;
@@ -121,6 +122,17 @@
             IHttpActionResult result = this.testee.AddTask(todoTask);
 
             this.tasks.Should().ContainSingle(x => x == todoTask);
+        }
+
+        [Fact]
+        public void AddTask_WhenInvalidModelState_MustReturnBadRequestResponse()
+        {
+            this.testee.ModelState.AddModelError("someProperty", "the value is invalid");
+
+            IHttpActionResult result = this.testee.AddTask(new TodoTask());
+
+            result.Should().BeOfType<InvalidModelStateResult>()
+                .Which.ModelState.Should().ContainKey("someProperty");
         }
     }
 }
