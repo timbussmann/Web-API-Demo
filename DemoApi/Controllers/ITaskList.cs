@@ -7,7 +7,7 @@
     {
     }
 
-    class TaskList : List<TodoTask>, ITaskList
+    public class TaskList : List<TodoTask>, ITaskList
     {
     }
 }
