@@ -123,16 +123,5 @@
 
             this.tasks.Should().ContainSingle(x => x == todoTask);
         }
-
-        [Fact]
-        public void AddTask_WhenInvalidModelState_MustReturnBadRequestResponse()
-        {
-            this.testee.ModelState.AddModelError("someProperty", "the value is invalid");
-
-            IHttpActionResult result = this.testee.AddTask(new TodoTask());
-
-            result.Should().BeOfType<InvalidModelStateResult>()
-                .Which.ModelState.Should().ContainKey("someProperty");
-        }
     }
 }

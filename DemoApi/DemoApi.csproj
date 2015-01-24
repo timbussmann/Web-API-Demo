@@ -176,6 +176,7 @@
     <Compile Include="Controllers\ITaskList.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Filters\NotNullAttribute.cs" />
+    <Compile Include="Filters\ValidateModelAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
